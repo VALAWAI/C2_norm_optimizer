@@ -1,1 +1,1 @@
-# C2_norm_optimizer
+# C2_alignment_calculator
