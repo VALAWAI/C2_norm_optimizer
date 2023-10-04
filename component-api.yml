@@ -1,0 +1,130 @@
+asyncapi: 2.6.0
+
+info:
+  title: VALAWAI C2 Norm Optimizer
+  version: '1.0.0'
+  description: |
+    This component optimizes the alingment of a set of norms into with respect to
+    some value.
+  contact:
+    name: IIIA-CSIC
+    url: https://www.iiia.csic.es/en-us/
+  license:
+    name: MIT
+    url: https://github.com/VALAWAI/C2_norm_optimizer/blob/main/LICENSE
+    
+channels:
+  valawai/C2/norm_optimizer/data/alignment:
+    publish:
+      summary: Provide the optimal norms and their alignment.
+      message:
+        $ref: '#/components/messages/opt_result'
+  valawai/C2/norm_optimizer/control/opt_cls:
+    subscribe:
+      summary: Transmit the optimizer class to perform the search.
+      message:
+        $ref: '#/components/messages/opt_cls'
+  valawai/C2/norm_optimizer/control/opt_args:
+    subscribe:
+      summary: Transmit the arguments for the optimizer class.
+      message:
+        $ref: '#/components/messages/opt_args'
+  valawai/C2/norm_optimizer/control/opt_kwargs:
+    subscribe:
+      summary: Transmit the keyword arguments for the optimizer class.
+      message:
+        $ref: '#/components/messages/opt_kwargs'
+  valawai/C2/norm_optimizer/control/term_dict:
+    subscribe:
+      summary: Transmit the dictionary of termination conditions for the search.
+      message:
+        $ref: '#/components/messages/term_dict'
+  valawai/C2/norm_optimizer/control/path_length:
+    publish:
+      summary: Provide the path length to compute the alignment.
+      message:
+        $ref: '#/components/messages/path_length'
+  valawai/C2/norm_optimizer/control/path_sample:
+    publish:
+      summary: Provide the sample size of paths to compute the alignment.
+      message:
+        $ref: '#/components/messages/path_sample'
+
+components:
+  messages:
+    opt_result:
+      summary: Message that contains the optimal norms and their alignment.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/opt_result_payload'
+    opt_cls:
+      summary: Message that contains the MEALPY optimizer to perform the search.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/opt_cls_payload'
+    opt_args:
+      summary: Message that contains the arguments to initialize the optimizer.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/opt_args_payload'
+    opt_kwargs:
+      summary: Message that contains the keyword arguments to tune the optimizer.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/opt_kwargs_payload'
+    term_dict:
+      summary: Message that contains the stopping conditions for the search.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/term_dict_payload'
+    path_length:
+      summary: Message that contains the path length to compute the alignment.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/path_length_payload'
+    path_sample:
+      summary: Message that contains the number of path to sample to compute the alignment.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/path_sample_payload'
+
+  schemas:
+    opt_result_payload:
+      type: object
+      description: The computed optimal norms and their alignment
+      properties:
+        algn:
+          type: number
+          min: -1
+          max: 1
+          example: 0.92
+        norms:
+          type: object
+          description: The optimal normative parameters.
+          example: {'n1': {'p11': 0.2, 'p12': 0.4}, 'n2': {'p21': -0.2, 'p22': 0.8}}
+    opt_cls_payload:
+      type: string
+      description: The MEALPY optimizer
+      example: "mealpy.physics_based.SA.GaussianSA"
+    opt_args_payload:
+      type: array
+      description: The initialization arguments for the MEALPY optimizer.
+      example: [10000, 100, 0.95, 0.025]
+    opt_kwargs_payload:
+      type: object
+      description: The initialization keyword arguments for the MEALPY optimizer.
+      example: {'temp_init': 100, 'cooling rate': 0.99}
+    term_dict_payload:
+      type: object
+      description: The termination conditions for the optimizing search.
+      example: {'max_early_stop': 1, 'epsilon': 0.01}
+    path_length_payload:
+      type: integer
+      description: The length of the paths to compute the alignment.
+      min: 1
+      example: 10
+    path_sample_payload:
+      type: integer
+      description: The number of paths to sample when computing the alignment.
+      min: 1
+      example: 500

@@ -1,0 +1,3 @@
+Flask==2.3.2
+valalgn==0.0.4
+mealpy==2.5.4
